@@ -43,6 +43,12 @@ var snowplow = require('./snowplow'),
 	queue,
 	windowAlias = window;
 
+// Just insert snowplow for now:
+(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+};p[i].q=p[i].q||[];
+}}(window,document,"script","sp.js","snowplow"));
+
 if (windowAlias.GlobalSnowplowNamespace && windowAlias.GlobalSnowplowNamespace.length > 0) {
 	queueName = windowAlias.GlobalSnowplowNamespace.shift();
 	queue = windowAlias[queueName];
