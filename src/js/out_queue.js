@@ -98,13 +98,13 @@
 			// handled (either loaded or errored) before calling queue execution done
 			// and checking for new items.
 			var requests = 0;
-      var done = 0;
-      var doneHash = {};
+			var done = 0;
+			var doneHash = {};
 			function handleDone (queueIndex) {
-        if (!doneHash[queueIndex]) {
-          done++;
-        }
-        doneHash[queueIndex] = true;
+				if (!doneHash[queueIndex]) {
+					done++;
+				}
+				doneHash[queueIndex] = true;
 				if (done >= requests) {
 					executingQueue = false;
 					executeQueue();
