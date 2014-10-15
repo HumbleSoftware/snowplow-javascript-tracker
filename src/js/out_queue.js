@@ -92,6 +92,25 @@
 
 			executingQueue = true;
 
+			// State for queue management.
+			//
+			// We count the number of requests we make, and ensure that they have been 
+			// handled (either loaded or errored) before calling queue execution done
+			// and checking for new items.
+			var requests = 0;
+      var done = 0;
+      var doneHash = {};
+			function handleDone (queueIndex) {
+        if (!doneHash[queueIndex]) {
+          done++;
+        }
+        doneHash[queueIndex] = true;
+				if (done >= requests) {
+					executingQueue = false;
+					executeQueue();
+				}
+			}
+
 			for (i in outQueue) {
 
 				if (outQueue[i] && outQueue.hasOwnProperty(i)) {
@@ -118,18 +137,23 @@
 							if (localStorageAccessible) {
 								localStorage.setItem(queueName, json2.stringify(outQueue));
 							}
-							executeQueue();
+							handleDone(queueIndex);
 						}
 
-						image.onerror = function() {}
+						image.onerror = function() {
+							handleDone(queueIndex);
+						}
 
+						requests++;
 						image.src = configCollectorUrl + nextRequest;
 
 					}(i));
 				}
 			}
 
-			executingQueue = false;
+			if (!requests) {
+				executingQueue = false;
+			}
 
 			// If every request has been sent, set the queue to []
 			if (lodash.compact(outQueue).length === 0) {
